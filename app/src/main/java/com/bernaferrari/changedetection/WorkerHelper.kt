@@ -11,6 +11,9 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import okhttp3.OkHttpClient
 import okhttp3.Request
+import org.jsoup.Jsoup
+import org.w3c.dom.Document
+import org.w3c.dom.Element
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
 import java.util.concurrent.TimeUnit
@@ -69,13 +72,20 @@ object WorkerHelper {
 
             val contentTypeAndCharset = response.headers["content-type"] ?: ""
 
-            val bytes = if (contentTypeAndCharset.contains("text")) {
-                response.body?.string()?.toByteArray() ?: throw NullPointerException()
-                // VERY inefficient solution for this problem:
-                // https://stackoverflow.com/questions/50788229/how-to-convert-response-body-from-bytearray-to-string-without-using-okhttp-owns
-            } else {
-                response.body?.bytes() ?: throw NullPointerException()
-            }
+//            val bytes = if (contentTypeAndCharset.contains("text")) {
+//                response.body?.string()?.toByteArray() ?: throw NullPointerException()
+//                // VERY inefficient solution for this problem:
+//                // https://stackoverflow.com/questions/50788229/how-to-convert-response-body-from-bytearray-to-string-without-using-okhttp-owns
+//            } else {
+//                response.body?.bytes() ?: throw NullPointerException()
+//            }
+
+            val document: org.jsoup.nodes.Document? = Jsoup.connect(url)
+                    .ignoreHttpErrors(true)
+                    .timeout(5000)
+                    .get()
+            val content: org.jsoup.nodes.Element? = document?.getElementsByClass("section-container")?.first()
+            var bytes = content.toString()?.toByteArray()
 
             Pair(contentTypeAndCharset, bytes)
         } catch (e: UnknownHostException) {

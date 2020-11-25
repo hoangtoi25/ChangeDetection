@@ -184,6 +184,7 @@ dependencies {
     implementation(Libs.okio)
     implementation("org.apache.commons:commons-text:1.8")
 
+    implementation("org.jsoup:jsoup:1.10.3")
 
     // Others
     implementation(Libs.threeTenAndroid)
