@@ -17,6 +17,7 @@ import com.airbnb.epoxy.EpoxyModelWithHolder
 import com.bernaferrari.base.misc.getColorCompat
 import com.bernaferrari.changedetection.R
 import com.bernaferrari.changedetection.core.KotlinEpoxyHolder
+import com.bernaferrari.changedetection.eventbus.ReloadAllDataEvent
 import com.bernaferrari.changedetection.extensions.onAnimationEnd
 import com.bernaferrari.changedetection.extensions.setImageDrawableIfNull
 import com.bernaferrari.changedetection.repo.ColorGroup
@@ -24,6 +25,9 @@ import com.bernaferrari.changedetection.repo.Site
 import com.bernaferrari.changedetection.repo.Snap
 import com.bernaferrari.changedetection.util.GradientColors
 import io.reactivex.Completable
+import org.greenrobot.eventbus.EventBus
+import org.greenrobot.eventbus.Subscribe
+import org.greenrobot.eventbus.ThreadMode
 
 @EpoxyModelClass(layout = R.layout.main_item_card)
 abstract class MainCardItem : EpoxyModelWithHolder<MainCardItem.Holder>() {
@@ -58,13 +62,21 @@ abstract class MainCardItem : EpoxyModelWithHolder<MainCardItem.Holder>() {
     var onLongClick: View.OnLongClickListener? = null
 
     override fun bind(holder: Holder) {
-
+        if (!EventBus.getDefault().isRegistered(this)) {
+            EventBus.getDefault().register(this)
+        }
         // set up transition
         val tag = site.id
         holder.containerView.tag = tag
         ViewCompat.setTransitionName(holder.containerView, tag)
 
         holder.auxBind(holder.containerView.context)
+
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    fun onEvent(event: ReloadAllDataEvent) {
+        onReload?.onClick(null)
     }
 
     private fun Holder.auxBind(context: Context) {
@@ -105,8 +117,8 @@ abstract class MainCardItem : EpoxyModelWithHolder<MainCardItem.Holder>() {
             else -> changeCardColor(context.getColorCompat(R.color.md_red_400), 0xfff04a43.toInt())
         }
         else -> changeCardColor(
-            context.getColorCompat(R.color.md_grey_500),
-            context.getColorCompat(R.color.md_grey_700)
+                context.getColorCompat(R.color.md_grey_500),
+                context.getColorCompat(R.color.md_grey_700)
         )
     }
 
@@ -126,9 +138,9 @@ abstract class MainCardItem : EpoxyModelWithHolder<MainCardItem.Holder>() {
         // drawable, it will be changed elsewhere, so we need to allow mutation first.
 
         cardView.background =
-            ContextCompat.getDrawable(cardView.context, R.drawable.full_round_corner)
-                ?.mutate()
-                ?.also { it.setTint(color) }
+                ContextCompat.getDrawable(cardView.context, R.drawable.full_round_corner)
+                        ?.mutate()
+                        ?.also { it.setTint(color) }
     }
 
     private fun Holder.changeCardColor(strongerColor: Int, weakerColor: Int) {
@@ -181,11 +193,11 @@ abstract class MainCardItem : EpoxyModelWithHolder<MainCardItem.Holder>() {
         currentlyReloading = false
 
         reload.animate()
-            .setDuration(150)
-            .scaleX(1f)
-            .scaleY(1f)
-            .alpha(1f)
-            .setListener(null)
+                .setDuration(150)
+                .scaleX(1f)
+                .scaleY(1f)
+                .alpha(1f)
+                .setListener(null)
 
         reload.visibility = View.VISIBLE
 

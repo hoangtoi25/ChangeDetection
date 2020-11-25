@@ -190,4 +190,7 @@ dependencies {
     implementation(Libs.threeTenAndroid)
     implementation(Libs.timeAgo)
     testImplementation(Libs.junit)
+
+    implementation("androidx.swiperefreshlayout:swiperefreshlayout:1.1.0")
+    implementation("org.greenrobot:eventbus:3.2.0")
 }

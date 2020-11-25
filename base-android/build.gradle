@@ -26,4 +26,10 @@ dependencies {
     implementation Libs.AndroidX.Lifecycle.extensions
 
     implementation Libs.RxJava.rxRelay
+
+
+    // Swipe Refresh Layout
+    implementation "androidx.swiperefreshlayout:swiperefreshlayout:1.1.0"
+
+    implementation 'org.greenrobot:eventbus:3.2.0'
 }

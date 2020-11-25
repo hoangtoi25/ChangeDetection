@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
 import androidx.appcompat.widget.Toolbar
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.bernaferrari.base.view.onScroll
 import com.bernaferrari.ui.R
 import com.bernaferrari.ui.base.SharedBaseFrag
@@ -25,6 +26,7 @@ abstract class BaseToolbarFragment : SharedBaseFrag(), CoroutineScope {
     lateinit var viewContainer: FrameLayout
     lateinit var toolbar: Toolbar
     lateinit var titleBar: ViewGroup
+    lateinit var swipeRefresh:SwipeRefreshLayout
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -35,6 +37,7 @@ abstract class BaseToolbarFragment : SharedBaseFrag(), CoroutineScope {
         viewContainer = findViewById(R.id.baseContainer)
         toolbar = findViewById(R.id.toolbarMenu)
         titleBar = findViewById(R.id.title_bar)
+        swipeRefresh = findViewById(R.id.swipe_refresh)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

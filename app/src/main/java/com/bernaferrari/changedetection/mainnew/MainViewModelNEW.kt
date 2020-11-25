@@ -110,7 +110,7 @@ class MainViewModelNEW @AssistedInject constructor(
 
     private var items = MutableLiveData<MutableList<SiteAndLastSnap>>()
 
-    internal fun updateItems() = launch(Dispatchers.Main) {
+    fun updateItems() = launch(Dispatchers.Main) {
         val list = mutableListOf<SiteAndLastSnap>()
         withContext(Dispatchers.IO) {
             mSitesRepository.getSites()

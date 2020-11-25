@@ -27,11 +27,13 @@ import com.airbnb.mvrx.fragmentViewModel
 import com.bernaferrari.base.misc.toDp
 import com.bernaferrari.base.mvrx.simpleController
 import com.bernaferrari.changedetection.*
+import com.bernaferrari.changedetection.eventbus.ReloadAllDataEvent
 import com.bernaferrari.changedetection.extensions.convertTimestampToDate
 import com.bernaferrari.changedetection.extensions.itemAnimatorWithoutChangeAnimations
 import com.bernaferrari.changedetection.repo.SiteAndLastSnap
 import com.bernaferrari.ui.dagger.DaggerBaseToolbarFragment
 import kotlinx.coroutines.launch
+import org.greenrobot.eventbus.EventBus
 import javax.inject.Inject
 
 class MainFragment : DaggerBaseToolbarFragment() {
@@ -89,6 +91,10 @@ class MainFragment : DaggerBaseToolbarFragment() {
 
         mViewModel.sortAlphabetically = Injector.get().sharedPrefs().getBoolean("sortByName", false)
 
+        swipeRefresh.setOnRefreshListener {
+                EventBus.getDefault().post(ReloadAllDataEvent())
+            swipeRefresh.isRefreshing = false
+        }
         recyclerView.apply {
             itemAnimator = itemAnimatorWithoutChangeAnimations()
             setPadding(16.toDp(resources))
